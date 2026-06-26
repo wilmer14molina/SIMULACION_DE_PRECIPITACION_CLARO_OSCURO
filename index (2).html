@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reactor Cuántico: Precipitación de CaCO3</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --bg-dark: #050506;
+            --panel-dark: #0c0c0e;
+            --gold-accent: #d97706;
+            --amber-glow: rgba(217, 119, 6, 0.15);
+            --precipitate-white: rgba(255, 255, 255, 0.85);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #f4f4f5;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-image: radial-gradient(circle at 50% 12%, var(--amber-glow) 0%, transparent 58%);
+            min-height: 100vh;
+        }
+
+        .serif-title {
+            font-family: 'Cinzel', serif;
+        }
+
+        /* Estilo Claroscuro: Sombras densas y focos direccionales de gran dramatismo */
+        .chiaroscuro-panel {
+            background: linear-gradient(145deg, #101012 0%, #050507 100%);
+            border: 1px solid rgba(217, 119, 6, 0.15);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.95), 
+                        inset 0 1px 0px rgba(255, 255, 255, 0.03);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .chiaroscuro-panel:hover {
+            border-color: rgba(217, 119, 6, 0.3);
+            box-shadow: 0 35px 70px -10px rgba(217, 119, 6, 0.06), inset 0 1px 0px rgba(255, 255, 255, 0.04);
+        }
+
+        /* Animación para el vertido de CaCl2 */
+        @keyframes pourLiquid {
+            0% { transform: translateY(-40px); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(120px); opacity: 0; }
+        }
+
+        .pour-stream {
+            animation: pourLiquid 1.5s forwards linear;
+            stroke: rgba(255, 255, 255, 0.6);
+            stroke-dasharray: 4 2;
+        }
+
+        /* Animación de opacidad para el enturbiamiento de CaCO3 */
+        .turbidity-fade {
+            transition: fill 2.5s ease-in-out, opacity 2.5s ease-in-out;
+        }
+
+        /* Estilo de botones rápidos */
+        .preset-btn {
+            @apply py-2 bg-zinc-900 border border-zinc-800 text-stone-300 rounded-lg text-xs font-bold hover:border-amber-500 hover:text-amber-400 disabled:opacity-20 disabled:pointer-events-none transition-all;
+        }
+
+        .preset-btn.active-preset {
+            @apply border-amber-500 text-amber-400 bg-amber-950/20 shadow-md shadow-amber-500/10;
+        }
+
+        /* Deslizador clásico */
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type="range"]:focus {
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #18181b;
+            border-radius: 2px;
+            border: 1px solid rgba(217, 119, 6, 0.1);
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #f59e0b 0%, #78350f 100%);
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -6px;
+            box-shadow: 0 0 10px #d97706;
+        }
+    </style>
+</head>
+<body class="antialiased pb-12">
+
+    <div class="max-w-7xl mx-auto px-4 md:px-8 py-8">
+        
+        <!-- Cabecera estilo clásico -->
+        <header class="text-center mb-10 relative">
+            <div class="inline-block border-b border-amber-500/20 pb-4">
+                <span class="text-amber-500/70 font-bold uppercase tracking-[0.3em] text-[9px] serif-title">Physica et Chimica Experimentalis</span>
+                <h1 class="text-4xl md:text-5xl font-black text-stone-100 serif-title mt-2 tracking-wide">El Crisol de Avogadro</h1>
+                <p class="text-stone-400 text-xs italic mt-1 font-serif">Simulación volumétrica y estequiométrica de la precipitación de Carbonato de Calcio (CaCO<sub>3</sub>)</p>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- PANEL IZQUIERDO: Configuración volumétrica y estequiometría -->
+            <div class="lg:col-span-5 space-y-6">
+                
+                <!-- Parámetros del Experimento -->
+                <div class="chiaroscuro-panel p-6 rounded-3xl space-y-5">
+                    <h3 class="text-xs font-black uppercase text-amber-500/80 tracking-widest border-b border-zinc-800/80 pb-3">1. Carga de Reactivos</h3>
+                    
+                    <!-- Reactivo fijo Na2CO3 -->
+                    <div class="flex justify-between items-center bg-black/40 p-4 rounded-2xl border border-zinc-900">
+                        <div>
+                            <span class="text-xs font-bold text-stone-200 block">Carbonato de Sodio (Na<sub>2</sub>CO<sub>3</sub>)</span>
+                            <span class="text-[10px] text-zinc-500">Volumen Fijo en el Vaso</span>
+                        </div>
+                        <div class="text-right font-mono text-sm">
+                            <span class="text-amber-500 font-bold">5.0 mL</span>
+                            <span class="text-zinc-600 block text-[10px]">Conc: 0.3 M</span>
+                        </div>
+                    </div>
+
+                    <!-- Configuración de Reactivo Variable CaCl2 -->
+                    <div class="bg-black/20 p-4 rounded-2xl border border-zinc-900/60 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-[10px] font-bold text-stone-300 tracking-wider block">
+                                    <span class="uppercase">Cloruro de Calcio</span> <span class="normal-case text-amber-500">(CaCl<sub>2</sub>)</span>
+                                </span>
+                                <span class="text-[10px] text-zinc-500">Volumen variable a adicionar</span>
+                            </div>
+                            <div class="text-right font-mono">
+                                <span id="cacl2-vol-display" class="text-amber-500 font-bold">3.0 mL</span>
+                                <span class="text-zinc-600 block text-[10px]">Conc: 0.3 M</span>
+                            </div>
+                        </div>
+
+                        <!-- Cuadrícula de selección rápida para CaCl2 -->
+                        <div class="grid grid-cols-3 gap-2" id="preset-grid">
+                            <button onclick="setCacl2Volume(2.0)" id="btn-20" class="preset-btn">2.0 mL</button>
+                            <button onclick="setCacl2Volume(2.5)" id="btn-25" class="preset-btn">2.5 mL</button>
+                            <button onclick="setCacl2Volume(3.0)" id="btn-30" class="preset-btn active-preset">3.0 mL</button>
+                            <button onclick="setCacl2Volume(3.5)" id="btn-35" class="preset-btn">3.5 mL</button>
+                            <button onclick="setCacl2Volume(4.0)" id="btn-40" class="preset-btn">4.0 mL</button>
+                            <button onclick="setCacl2Volume(4.5)" id="btn-45" class="preset-btn">4.5 mL</button>
+                        </div>
+                        <p id="vol-lock-notice" class="text-[9px] text-zinc-500 italic hidden">Limpie el vaso de precipitados para configurar un nuevo volumen.</p>
+                    </div>
+
+                    <!-- Botones de acción principal -->
+                    <div class="grid grid-cols-2 gap-3 pt-2">
+                        <button id="btn-mix" onclick="triggerMixing()" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-zinc-950 text-xs font-black uppercase rounded-xl tracking-wider transition-all disabled:opacity-20">Mezclar Reactivos</button>
+                        <button id="btn-reset" onclick="resetExperiment()" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-stone-300 text-xs font-black uppercase rounded-xl tracking-wider transition-all">Limpiar Vaso</button>
+                    </div>
+                </div>
+
+                <!-- Datos Químicos y Estequiometría -->
+                <div class="chiaroscuro-panel p-6 rounded-3xl space-y-4">
+                    <h3 class="text-xs font-black uppercase text-amber-500/80 tracking-widest border-b border-zinc-800/80 pb-3">2. Monitoreo Estequiométrico</h3>
+                    
+                    <!-- Ecuación balanceada -->
+                    <div class="bg-black/50 p-4 rounded-2xl border border-zinc-900 flex flex-col justify-center items-center text-center">
+                        <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-widest mb-1.5">Reacción de Precipitación</span>
+                        <div class="font-serif italic text-sm text-stone-200 tracking-wide">
+                            CaCl<sub>2</sub>(ac) + Na<sub>2</sub>CO<sub>3</sub>(ac) <span class="text-amber-500 font-sans font-bold">→</span> CaCO<sub>3</sub>(s)↓ + 2NaCl(ac)
+                        </div>
+                    </div>
+
+                    <!-- Fichas de Pesos Moleculares (Reactivos y Productos) -->
+                    <div class="grid grid-cols-4 gap-1 bg-black/30 p-3 rounded-2xl border border-zinc-900/60 text-center">
+                        <div class="flex flex-col justify-center">
+                            <span class="text-[7.5px] text-zinc-500 font-black uppercase tracking-wider mb-0.5">CaCl<sub>2</sub></span>
+                            <span class="font-mono text-[10px] text-amber-400/90 font-bold">110.98 <span class="text-[7px] text-zinc-600 font-sans block">g/mol</span></span>
+                        </div>
+                        <div class="flex flex-col justify-center border-x border-zinc-900">
+                            <span class="text-[7.5px] text-zinc-500 font-black uppercase tracking-wider mb-0.5">Na<sub>2</sub>CO<sub>3</sub></span>
+                            <span class="font-mono text-[10px] text-stone-300 font-bold">105.99 <span class="text-[7px] text-zinc-600 font-sans block">g/mol</span></span>
+                        </div>
+                        <div class="flex flex-col justify-center border-r border-zinc-900">
+                            <span class="text-[7.5px] text-zinc-500 font-black uppercase tracking-wider mb-0.5">CaCO<sub>3</sub>↓</span>
+                            <span class="font-mono text-[10px] text-emerald-400 font-bold">100.09 <span class="text-[7px] text-zinc-600 font-sans block">g/mol</span></span>
+                        </div>
+                        <div class="flex flex-col justify-center">
+                            <span class="text-[7.5px] text-zinc-500 font-black uppercase tracking-wider mb-0.5">NaCl</span>
+                            <span class="font-mono text-[10px] text-stone-300 font-bold">58.44 <span class="text-[7px] text-zinc-600 font-sans block">g/mol</span></span>
+                        </div>
+                    </div>
+
+                    <!-- Monitor de Masas y Reactivo Limitante -->
+                    <div class="space-y-4 font-mono text-xs pt-1">
+                        
+                        <!-- Comparador de Reactivos: Moles y Volumen -->
+                        <div class="bg-black/40 p-4 rounded-2xl border border-zinc-900 space-y-3">
+                            <div class="text-[9px] text-zinc-500 font-bold uppercase tracking-wider border-b border-zinc-900 pb-1.5 flex justify-between">
+                                <span>Comparador de Moles (Relación Estequiométrica 1:1)</span>
+                                <span class="text-amber-500">Conc: 0.3 M</span>
+                            </div>
+                            
+                            <!-- CaCl2 Limitante -->
+                            <div class="space-y-1">
+                                <div class="flex justify-between items-center text-[10px]">
+                                    <span class="font-sans font-bold text-stone-300">CaCl<sub>2</sub></span>
+                                    <span class="px-2 py-0.5 rounded bg-red-950/60 border border-red-800/40 text-red-400 text-[8px] font-black uppercase tracking-wider animate-pulse">LIMITANTE</span>
+                                </div>
+                                <div class="flex justify-between items-center font-mono text-[11px] text-zinc-400">
+                                    <span id="cacl2-moles-val">0.00090 mol</span>
+                                    <span id="cacl2-vol-val">3.0 mL</span>
+                                </div>
+                                <div class="w-full h-1.5 bg-zinc-950 rounded-full overflow-hidden">
+                                    <div id="bar-cacl2-moles" class="h-full bg-red-500 transition-all duration-500" style="width: 60%"></div>
+                                </div>
+                            </div>
+
+                            <!-- Na2CO3 en Exceso -->
+                            <div class="space-y-1">
+                                <div class="flex justify-between items-center text-[10px]">
+                                    <span class="font-sans font-bold text-stone-300">Na<sub>2</sub>CO<sub>3</sub></span>
+                                    <span class="px-2 py-0.5 rounded bg-blue-950/60 border border-blue-800/40 text-blue-400 text-[8px] font-black uppercase tracking-wider">EXCESO</span>
+                                </div>
+                                <div class="flex justify-between items-center font-mono text-[11px] text-zinc-400">
+                                    <span>0.00150 mol</span>
+                                    <span>5.0 mL (Fijo)</span>
+                                </div>
+                                <div class="w-full h-1.5 bg-zinc-950 rounded-full overflow-hidden">
+                                    <div id="bar-na2co3-moles" class="h-full bg-blue-500 transition-all duration-500" style="width: 100%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CaCO3 Teórico Producido -->
+                        <div>
+                            <div class="flex justify-between text-[10px] text-zinc-500 font-bold tracking-wide mb-1">
+                                <span class="uppercase">Precipitado Teórico</span> <span class="normal-case text-amber-500">(CaCO<sub>3</sub>)</span>
+                                <span id="mass-caco3-txt">0.090 g</span>
+                            </div>
+                            <div class="w-full h-1.5 bg-zinc-950 rounded-full overflow-hidden border border-zinc-900">
+                                <div id="bar-caco3" class="h-full bg-emerald-500/80 transition-all duration-300" style="width: 66.67%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- PANEL DERECHO: Laboratorio Gráfico y Termometría -->
+            <div class="lg:col-span-7 space-y-6">
+                
+                <!-- Escena del Laboratorio (Vaso de precipitados bajo spotlight) -->
+                <div class="chiaroscuro-panel p-6 rounded-3xl flex flex-col items-center relative overflow-hidden">
+                    <h4 class="text-xs font-black text-amber-500/80 tracking-widest uppercase mb-4 self-start border-b border-zinc-800/80 pb-2 w-full">Vaso de Reacción Química</h4>
+
+                    <!-- Escena de cristal e iluminación -->
+                    <div class="w-full h-[360px] rounded-2xl relative overflow-hidden bg-gradient-to-b from-stone-950 to-black border border-zinc-900/80 flex items-center justify-center">
+                        
+                        <!-- Haz de luz cenital dramática (Claroscuro) -->
+                        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-72 h-44 bg-amber-500/10 blur-3xl rounded-full"></div>
+
+                        <!-- El Reactor SVG Principal -->
+                        <svg width="280" height="320" viewBox="0 0 200 220" class="relative z-10">
+                            <!-- Máscara de recorte para mantener los fluidos y precipitados dentro del vaso de precipitados -->
+                            <defs>
+                                <clipPath id="beaker-clip">
+                                    <path d="M43 40 H157 V190 A10 10 0 0 1 147 200 H53 A10 10 0 0 1 43 190 Z" />
+                                </clipPath>
+                            </defs>
+
+                            <!-- Chorro de CaCl2 que se vierte desde arriba -->
+                            <line id="pour-stream" x1="100" y1="-20" x2="100" y2="120" stroke="none" stroke-width="2.5" class="pour-stream opacity-0" />
+
+                            <!-- Vaso de Precipitados (Beaker) de vidrio de 100 mL -->
+                            <g id="beaker">
+                                <!-- Contenido interno con máscara de recorte -->
+                                <g clip-path="url(#beaker-clip)">
+                                    <!-- Solución Base Na2CO3 (5 mL inicialmente, transparente con leve tinte celeste) -->
+                                    <rect id="liquid-base" x="40" y="140" width="120" height="65" fill="rgba(56, 189, 248, 0.08)" class="liquid-transition" />
+
+                                    <!-- Fase de enturbiamiento / turbidez CaCO3 (blanco lechoso coloidal) -->
+                                    <rect id="liquid-turbidity" x="40" y="100" width="120" height="105" fill="rgba(255, 255, 255, 0)" class="turbidity-fade" />
+
+                                    <!-- Precipitado sólido sedimentado en el fondo (Masa variable CaCO3) -->
+                                    <rect id="solid-precipitate" x="40" y="200" width="120" height="0" fill="#f4f4f5" opacity="0.9" class="liquid-transition" />
+
+                                    <!-- Partículas de precipitado suspendidas flotando hacia abajo -->
+                                    <g id="particles-container"></g>
+                                </g>
+
+                                <!-- Vidrio exterior del vaso -->
+                                <path d="M43 35 V190 A10 10 0 0 0 53 200 H147 A10 10 0 0 0 157 190 V35" fill="none" stroke="#71717a" stroke-width="2" />
+                                <path d="M40 35 H46 M154 35 H160" stroke="#71717a" stroke-width="2" /> <!-- Labio exterior -->
+                                
+                                <!-- Graduación del vaso (Líneas de medida de volumen) -->
+                                <line x1="135" y1="140" x2="147" y2="140" stroke="#52525b" stroke-width="1" />
+                                <text x="130" y="143" font-size="7" fill="#52525b" text-anchor="end" font-family="monospace">5 mL</text>
+                                <line x1="135" y1="100" x2="147" y2="100" stroke="#52525b" stroke-width="1" />
+                                <text x="130" y="103" font-size="7" fill="#52525b" text-anchor="end" font-family="monospace">10 mL</text>
+
+                                <!-- Reflejo de cristal pulido para dar fotorrealismo clásico -->
+                                <path d="M148 55 V180 A6 6 0 0 1 142 186" fill="none" stroke="#ffffff" stroke-width="1.8" opacity="0.18" stroke-linecap="round" />
+                                <path d="M52 55 V180 A6 6 0 0 0 58 186" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.08" stroke-linecap="round" />
+                            </g>
+                        </svg>
+
+                        <!-- Lectura digital de masa sólida real -->
+                        <div class="absolute bottom-4 left-4 bg-zinc-950/90 py-2 px-4 rounded-xl border border-zinc-900 flex flex-col font-mono">
+                            <span class="text-[8px] text-zinc-500 font-bold uppercase tracking-wider">Masa de Precipitado</span>
+                            <span id="scale-display" class="text-xl font-bold text-emerald-400 mt-0.5">0.000 g</span>
+                        </div>
+
+                        <!-- Estado cinético del sistema -->
+                        <div class="absolute bottom-4 right-4 bg-zinc-950/90 py-2 px-4 rounded-xl border border-zinc-900 flex flex-col font-mono text-right">
+                            <span class="text-[8px] text-zinc-500 font-bold uppercase tracking-wider">Estado Cinético</span>
+                            <span id="kinetic-display" class="text-xs font-bold text-zinc-500 mt-1 uppercase">Reposo</span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Lente Cuántico Subatómico (Canvas Físico de Alto Rendimiento) -->
+                <div class="chiaroscuro-panel p-5 rounded-3xl">
+                    <h4 class="text-xs font-black text-amber-500/80 tracking-widest uppercase mb-4 border-b border-zinc-800/80 pb-3">Lente de Enfoque Cuántico</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                        <div class="md:col-span-4 text-xs space-y-1">
+                            <span class="text-zinc-500 font-bold uppercase text-[9px] block">Atracción electrostática iónica</span>
+                            <p class="text-stone-300 font-medium">Observa cómo los cationes Ca<sup>2+</sup> y los aniones CO<sub>3</sub><sup>2-</sup> se unen y se ordenan formando la red cristalina del CaCO<sub>3</sub>, mientras que el Na<sup>+</sup> y el Cl<sup>-</sup> permanecen libres como iones espectadores.</p>
+                        </div>
+                        <div class="md:col-span-8 h-36 rounded-2xl bg-black border border-zinc-900/80 relative overflow-hidden flex items-center justify-center">
+                            <!-- Retícula y partículas subatómicas -->
+                            <div class="absolute inset-0 bg-radial from-transparent via-transparent to-black/90 z-20 pointer-events-none"></div>
+                            <div id="quantum-chamber" class="absolute inset-0 w-full h-full flex items-center justify-center">
+                                <canvas id="quantum-canvas" class="w-full h-full block"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // Pesos moleculares para estequiometría precisa
+        const PM_CACO3 = 100.09;
+        const CONC_MOLAR = 0.3; // 0.3M para ambos
+        const VOL_NA2CO3 = 5.0; // 5 mL fijo
+        const MOLES_NA2CO3 = (VOL_NA2CO3 / 1000) * CONC_MOLAR; // 0.00150 mol
+
+        let state = {
+            cacl2Volume: 3.0, // Inicial 3.0 mL
+            massCaCO3: 0.0,
+            targetMassCaCO3: 0.0,
+            stepActive: false, // Bloqueo si se está mezclando o sedimentando
+            ph: 7.0
+        };
+
+        // Elementos UI
+        const liquidBase = document.getElementById('liquid-base');
+        const liquidTurbidity = document.getElementById('liquid-turbidity');
+        const solidPrecipitate = document.getElementById('solid-precipitate');
+        const pourStream = document.getElementById('pour-stream');
+        const particlesContainer = document.getElementById('particles-container');
+
+        const scaleDisplay = document.getElementById('scale-display');
+        const kineticDisplay = document.getElementById('kinetic-display');
+
+        const massCaco3Txt = document.getElementById('mass-caco3-txt');
+        const cacl2MolesVal = document.getElementById('cacl2-moles-val');
+        const cacl2VolVal = document.getElementById('cacl2-vol-val');
+        const barCacl2Moles = document.getElementById('bar-cacl2-moles');
+        const barCaco3 = document.getElementById('bar-caco3');
+        const cacl2VolDisplay = document.getElementById('cacl2-vol-display');
+        const volLockNotice = document.getElementById('vol-lock-notice');
+
+        // --- SISTEMA DEL LENTE CUÁNTICO (FÍSICA CANVAS) ---
+        const canvas = document.getElementById('quantum-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let canvasWidth = 0;
+        let canvasHeight = 0;
+        let qSpectators = []; // Iones Na+ y Cl- libres
+        let qReactants = []; // Ca2+ y CO3^2- libres que van a colisionar
+        let qCrystal = []; // Red iónica CaCO3 en el fondo
+        let caco3CrystalCount = 0;
+        let animationFrameId = null;
+
+        function resizeCanvas() {
+            canvasWidth = canvas.clientWidth;
+            canvasHeight = canvas.clientHeight;
+            canvas.width = canvasWidth;
+            canvas.height = canvasHeight;
+        }
+
+        // Población inicial de iones disueltos (Pre-reacción)
+        function initQuantumParticles() {
+            qSpectators = [];
+            qReactants = [];
+            qCrystal = [];
+            caco3CrystalCount = 0;
+
+            // Cantidad de iones proporcional al volumen de CaCl2
+            const numIons = Math.round(state.cacl2Volume * 6);
+            
+            // Iones espectadores libres (Na+ en rosa, Cl- en blanco)
+            for (let i = 0; i < numIons; i++) {
+                qSpectators.push({
+                    x: Math.random() * canvasWidth,
+                    y: Math.random() * canvasHeight,
+                    vx: (Math.random() - 0.5) * 1.2,
+                    vy: (Math.random() - 0.5) * 1.2,
+                    color: '#fd5c63', // Na+
+                    size: 3,
+                    type: 'Na+'
+                });
+                qSpectators.push({
+                    x: Math.random() * canvasWidth,
+                    y: Math.random() * canvasHeight,
+                    vx: (Math.random() - 0.5) * 1.2,
+                    vy: (Math.random() - 0.5) * 1.2,
+                    color: '#ffffff', // Cl-
+                    size: 4.5,
+                    type: 'Cl-'
+                });
+            }
+
+            // Reactivos listos para unirse (Ca2+ en azul, CO3^2- en verde)
+            for (let i = 0; i < numIons; i++) {
+                qReactants.push({
+                    x: Math.random() * canvasWidth,
+                    y: Math.random() * (canvasHeight - 40),
+                    vx: (Math.random() - 0.5) * 0.8,
+                    vy: (Math.random() - 0.5) * 0.8,
+                    color: '#60a5fa', // Ca2+ (Azul)
+                    size: 4,
+                    type: 'Ca2+'
+                });
+                qReactants.push({
+                    x: Math.random() * canvasWidth,
+                    y: Math.random() * (canvasHeight - 40),
+                    vx: (Math.random() - 0.5) * 0.8,
+                    vy: (Math.random() - 0.5) * 0.8,
+                    color: '#34d399', // CO3^2- (Verde)
+                    size: 6.5,
+                    type: 'CO3^2-'
+                });
+            }
+        }
+
+        // Animación molecular
+        function animateQuantum() {
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+            // Retícula del lente
+            ctx.strokeStyle = 'rgba(217, 119, 6, 0.05)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.arc(canvasWidth / 2, canvasHeight / 2, Math.min(canvasWidth, canvasHeight) * 0.45, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // 1. Dibujar y mover espectadores libres (Na+, Cl-) - Nunca reaccionan
+            qSpectators.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+
+                // Rebotar en bordes
+                if (p.x < 5 || p.x > canvasWidth - 5) p.vx *= -1;
+                if (p.y < 5 || p.y > canvasHeight - 5) p.vy *= -1;
+
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // 2. Colisión y formación de precipitado CaCO3 si la mezcla está activa
+            if (state.stepActive && qReactants.length > 0) {
+                // Buscamos colisiones entre Ca2+ y CO3^2- para precipitar
+                for (let i = qReactants.length - 1; i >= 0; i--) {
+                    const r1 = qReactants[i];
+                    if (r1.type === 'Ca2+') {
+                        // Buscar el carbonato más cercano
+                        for (let j = qReactants.length - 1; j >= 0; j--) {
+                            const r2 = qReactants[j];
+                            if (r2.type === 'CO3^2-') {
+                                const dist = Math.hypot(r1.x - r2.x, r1.y - r2.y);
+                                if (dist < 15) {
+                                    // Combinar y mandar al fondo como red cristalina
+                                    precipitateIons(r1, r2);
+                                    qReactants.splice(Math.max(i, j), 1);
+                                    qReactants.splice(Math.min(i, j), 1);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 3. Dibujar reactivos que aún no colisionan
+            qReactants.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.x < 5 || p.x > canvasWidth - 5) p.vx *= -1;
+                if (p.y < 5 || p.y > canvasHeight - 5) p.vy *= -1;
+
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // 4. Dibujar red cristalina de CaCO3 (Sólido en el fondo)
+            qCrystal.forEach(p => {
+                // Llegada amortiguada a su red iónica
+                p.x += (p.targetX - p.x) * 0.08;
+                p.y += (p.targetY - p.y) * 0.08;
+
+                ctx.fillStyle = p.color;
+                ctx.shadowColor = p.color;
+                ctx.shadowBlur = 3;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            ctx.shadowBlur = 0;
+
+            animationFrameId = requestAnimationFrame(animateQuantum);
+        }
+
+        // Simula la atracción iónica y empaqueta los átomos de CaCO3 en la red cristalina
+        function precipitateIons(ca, co3) {
+            const index = caco3CrystalCount++;
+            
+            // Coordenadas de empaquetamiento cúbico en el fondo del lente
+            const gridCols = 8;
+            const cellSize = 11;
+            const startX = canvasWidth / 2 - (gridCols * cellSize) / 2;
+            const startY = canvasHeight - 15;
+
+            const row = Math.floor(index / gridCols);
+            const col = index % gridCols;
+
+            qCrystal.push({
+                x: ca.x,
+                y: ca.y,
+                targetX: startX + col * cellSize,
+                targetY: startY - row * cellSize,
+                color: '#60a5fa', // Ca
+                size: 3
+            });
+
+            qCrystal.push({
+                x: co3.x,
+                y: co3.y,
+                targetX: startX + col * cellSize + 5,
+                targetY: startY - row * cellSize - 4,
+                color: '#34d399', // CO3
+                size: 5
+            });
+        }
+
+        // --- SISTEMA MACROSCÓPICO (SVG / REACTOR) ---
+
+        function setCacl2Volume(vol) {
+            if (state.stepActive) return; // Bloqueo de seguridad si la reacción ya se ejecutó
+
+            state.cacl2Volume = parseFloat(vol);
+            cacl2VolDisplay.innerText = `${state.cacl2Volume.toFixed(1)} mL`;
+
+            // Actualizar botones rápidos activos
+            document.querySelectorAll('.preset-btn').forEach(btn => {
+                btn.classList.remove('active-preset');
+            });
+            const selectedBtn = document.getElementById(`btn-${Math.round(vol * 10)}`);
+            if (selectedBtn) selectedBtn.classList.add('active-preset');
+
+            // Calcular valores teóricos precisos
+            const molesCacl2 = (state.cacl2Volume / 1000) * CONC_MOLAR;
+            state.targetMassCaCO3 = molesCacl2 * PM_CACO3; // Relación 1:1, CaCl2 es limitante
+
+            // Actualizar monitor estequiométrico detallado
+            cacl2MolesVal.innerText = `${molesCacl2.toFixed(5)} mol`;
+            cacl2VolVal.innerText = `${state.cacl2Volume.toFixed(1)} mL`;
+            massCaco3Txt.innerText = `${state.targetMassCaCO3.toFixed(3)} g`;
+
+            // Actualizar las barras del comparador de reactivos
+            // El máximo de moles es Na2CO3 (0.00150 mol = 100% de la barra)
+            const molesPercent = (molesCacl2 / MOLES_NA2CO3) * 100;
+            barCacl2Moles.style.width = `${molesPercent}%`;
+
+            // Escalar barra de progreso teórica del CaCO3 obtenido
+            const maxMass = 0.00135 * PM_CACO3; // Máximo a 4.5 mL es 0.135 g
+            barCaco3.style.width = `${(state.targetMassCaCO3 / maxMass) * 100}%`;
+
+            initQuantumParticles();
+        }
+
+        // Gatillo para iniciar la simulación física de la mezcla
+        function triggerMixing() {
+            if (state.stepActive) return;
+            state.stepActive = true;
+
+            // Bloquear controles volumétricos
+            document.getElementById('btn-mix').disabled = true;
+            document.querySelectorAll('.preset-btn').forEach(btn => btn.disabled = true);
+            volLockNotice.classList.remove('hidden');
+
+            // 1. Iniciar chorro de CaCl2 (SVG Animado)
+            pourStream.setAttribute('stroke', 'rgba(186, 230, 253, 0.7)');
+            pourStream.setAttribute('class', 'pour-stream opacity-100');
+            kineticDisplay.innerText = "Adición";
+            kineticDisplay.className = "text-xs font-bold text-sky-400 animate-pulse";
+
+            // 2. Enturbiamiento inmediato (Transición a solución coloidal lechosa)
+            setTimeout(() => {
+                // Aumentar nivel de líquido total en base al volumen adicionado (Na2CO3 5mL + CaCl2 mL)
+                const totalVol = VOL_NA2CO3 + state.cacl2Volume;
+                // Escalamiento visual en base al volumen
+                const heightY = 140 - (state.cacl2Volume * 8);
+                const heightH = 65 + (state.cacl2Volume * 8);
+
+                liquidBase.setAttribute('y', heightY);
+                liquidBase.setAttribute('height', heightH);
+                
+                liquidTurbidity.setAttribute('y', heightY);
+                liquidTurbidity.setAttribute('height', heightH);
+                liquidTurbidity.style.fill = '#f4f4f5';
+                liquidTurbidity.style.opacity = '0.92';
+
+                // Detener chorro de adición
+                pourStream.setAttribute('stroke', 'none');
+                pourStream.setAttribute('class', 'pour-stream opacity-0');
+
+                // Iniciar flujo interno de iones para colisionar
+                initPrecipitationKinetic();
+            }, 1500);
+        }
+
+        // Generar partículas físicas de precipitado suspendidas sedimentándose
+        function initPrecipitationKinetic() {
+            kineticDisplay.innerText = "Precipitando";
+            kineticDisplay.className = "text-xs font-bold text-amber-500 animate-pulse";
+
+            // Generar partículas físicas descendientes en SVG
+            particlesContainer.innerHTML = '';
+            const numParticles = Math.round(state.cacl2Volume * 6);
+            
+            for (let i = 0; i < numParticles; i++) {
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', `${50 + Math.random() * 100}`);
+                circle.setAttribute('cy', '110');
+                circle.setAttribute('r', `${1.2 + Math.random() * 2}`);
+                circle.setAttribute('fill', '#f4f4f5');
+                circle.style.transition = 'transform 3.5s cubic-bezier(0.25, 1, 0.5, 1)';
+                particlesContainer.appendChild(circle);
+
+                // Hacer descender cada partícula con un delay escalonado
+                setTimeout(() => {
+                    circle.style.transform = `translateY(${70 + Math.random() * 20}px)`;
+                }, Math.random() * 500);
+            }
+
+            // 3. Sedimentación en el fondo y aumento del peso en balanza
+            setTimeout(() => {
+                kineticDisplay.innerText = "Sedimentando";
+                kineticDisplay.className = "text-xs font-bold text-emerald-500 animate-pulse";
+
+                // El vaso se va aclarando (la fase coloidal blanca se desvanece de arriba a abajo)
+                liquidTurbidity.style.opacity = '0.12';
+
+                // Aparece el precipitado acumulado en el fondo
+                const solidHeight = Math.max(3, state.cacl2Volume * 4);
+                solidPrecipitate.setAttribute('y', `${200 - solidHeight}`);
+                solidPrecipitate.setAttribute('height', `${solidHeight}`);
+
+                // Animación analógica del lector de balanza subiendo hasta el peso final
+                let currentWeight = 0.000;
+                const weightStep = state.targetMassCaCO3 / 30;
+                
+                const scaleTimer = setInterval(() => {
+                    currentWeight += weightStep;
+                    if (currentWeight >= state.targetMassCaCO3) {
+                        currentWeight = state.targetMassCaCO3;
+                        clearInterval(scaleTimer);
+                        
+                        // Reacción totalmente finalizada
+                        kineticDisplay.innerText = "Completado";
+                        kineticDisplay.className = "text-xs font-bold text-emerald-500";
+                    }
+                    state.massCaCO3 = currentWeight; // Mantener el estado sincronizado
+                    scaleDisplay.innerText = `${currentWeight.toFixed(3)} g`;
+                }, 80);
+
+            }, 4000);
+        }
+
+        function resetExperiment() {
+            state.massCaCO3 = 0.0;
+            state.stepActive = false;
+
+            // Habilitar controles
+            document.getElementById('btn-mix').disabled = false;
+            document.querySelectorAll('.preset-btn').forEach(btn => btn.disabled = false);
+            volLockNotice.classList.add('hidden');
+
+            scaleDisplay.innerText = "0.000 g";
+            kineticDisplay.innerText = "Reposo";
+            kineticDisplay.className = "text-xs font-bold text-zinc-500";
+
+            // Reset de visuales SVG
+            liquidBase.setAttribute('y', '140');
+            liquidBase.setAttribute('height', '65');
+            liquidTurbidity.style.opacity = '0';
+            liquidTurbidity.style.fill = 'transparent';
+            solidPrecipitate.setAttribute('height', '0');
+            solidPrecipitate.setAttribute('y', '200');
+            pourStream.setAttribute('stroke', 'none');
+            particlesContainer.innerHTML = '';
+
+            // Reiniciar partículas en el Lente de Enfoque Cuántico
+            initQuantumParticles();
+        }
+
+        // Ejecutar inicialización al cargar la ventana
+        window.onload = function() {
+            resizeCanvas();
+            setCacl2Volume(3.0); // Carga inicial
+            animateQuantum();
+        };
+
+        window.onresize = resizeCanvas;
+    </script>
+</body>
+</html>
